@@ -19,4 +19,4 @@ rules, and providing a real-time dashboard for habitat monitoring.
 13) As a Mars operator, I want to see some metrics (average, max, min) about received data so that I can analyse them.
 14) As a Mars operator, I want to receive a notification when an automation rule is triggered so that I know when the system reacts automatically. (log)
 15) As a Mars operator, I want to be able to export useful data into pdf files so that I can process them offline.
-16) As a Mars operator, I want to be able to be able to activate/disable an automation rule so that I can have more flexibility and handle critic situèations
+16) As a Mars operator, I want to be able to be able to activate/disable an automation rule so that I can have more flexibility and handle critic situations.
