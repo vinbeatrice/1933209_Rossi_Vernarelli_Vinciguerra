@@ -19,7 +19,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 @Service
 public class TelemetrySubscriberService {
 
-    private static final String BASE_URL = "http://localhost:8080/api";
+    private static final String BASE_URL = "http://simulator:8080/api";
 
     private final ObjectMapper mapper = new ObjectMapper();
     private final NormalizerRegistry normalizerRegistry;

@@ -18,7 +18,7 @@ import org.springframework.web.servlet.mvc.method.annotation.SseEmitter;
 
 @RestController
 public class DiscoveryClient {
-    private static final String BASE_URL = "http://localhost:8080/api";
+    private static final String BASE_URL = "http://simulator:8080/api";
     private final NormalizerRegistry normalizerRegistry;
     private final RestPollingService restPollingService;
     private final TelemetrySubscriberService telemetrySubscriberService;

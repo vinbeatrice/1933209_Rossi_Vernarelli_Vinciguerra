@@ -12,7 +12,7 @@ import java.net.URL;
 
 @Service
 public class RestPollingService {
-    private static final String BASE_URL = "http://localhost:8080/api/sensors/";
+    private static final String BASE_URL = "http://simulator:8080/api/sensors/";
 
     private final NormalizerRegistry normalizerRegistry;
     private final ObjectMapper mapper = new ObjectMapper();

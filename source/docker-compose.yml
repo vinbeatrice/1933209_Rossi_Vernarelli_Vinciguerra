@@ -1,0 +1,17 @@
+services:
+
+  simulator:
+    image: mars-iot-simulator:multiarch_v1
+    ports:
+      - "8080:8080"
+
+  ingestion:
+    build: ./ingestion
+    ports:
+      - "8081:8081"
+  
+# rabbitmq:
+#   image: rabbitmq:management
+#     ports:
+#       - "5672:5672"
+#       - "15672:15672"
