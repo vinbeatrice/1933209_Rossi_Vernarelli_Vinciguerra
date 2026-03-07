@@ -1,4 +1,4 @@
-package it.uniroma1.ingestion.normalization_helpers;
+package it.uniroma1.processing.normalization_helpers;
 
 import com.fasterxml.jackson.databind.JsonNode;
 

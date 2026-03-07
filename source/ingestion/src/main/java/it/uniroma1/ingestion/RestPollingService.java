@@ -1,36 +1,35 @@
 package it.uniroma1.ingestion;
 
-import it.uniroma1.ingestion.normalization_helpers.*;
-import it.uniroma1.ingestion.rest_normalization.*;
-import it.uniroma1.ingestion.telemetry_normalization.*;
-
-import org.springframework.stereotype.Service;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import it.uniroma1.ingestion.normalization_helpers.NormalizedEvent;
+import it.uniroma1.ingestion.normalization_helpers.RestSensor;
+import org.springframework.scheduling.annotation.Scheduled;
+import org.springframework.stereotype.Service;
+
 import java.io.InputStream;
 import java.net.URL;
+import java.util.List;
 
 @Service
 public class RestPollingService {
+
     private static final String BASE_URL = "http://simulator:8080/api/sensors/";
+    private static final String DR_URL = "http://simulator:8080/api";
 
     private final NormalizerRegistry normalizerRegistry;
+    private final SensorIngestionService sensorIngestionService;
     private final ObjectMapper mapper = new ObjectMapper();
 
-    public RestPollingService(NormalizerRegistry normalizerRegistry) {
+    public RestPollingService(
+            NormalizerRegistry normalizerRegistry,
+            SensorIngestionService sensorIngestionService
+    ) {
         this.normalizerRegistry = normalizerRegistry;
+        this.sensorIngestionService = sensorIngestionService;
     }
-    /*
-    public void handleSensorResponse(String schema, String jsonResponse) throws Exception {
 
-        JsonNode payload = objectMapper.readTree(jsonResponse);
-
-        NormalizedEvent event = normalizerRegistry.normalize(schema, payload);
-
-        System.out.println("Normalized event: " + event);
-    }*/
-
-   public NormalizedEvent fetchAndNormalizeRestSensor(RestSensor sensor) throws Exception {
+    public NormalizedEvent fetchAndNormalizeRestSensor(RestSensor sensor) throws Exception {
         String sensorId = sensor.getSensor_id();
         String schema = sensor.getSchema_id();
 
@@ -42,5 +41,33 @@ public class RestPollingService {
         }
 
         return normalizerRegistry.normalize(schema, payload);
+    }
+
+    public void processSingleRestSensor(RestSensor sensor) {
+        try {
+            NormalizedEvent event = fetchAndNormalizeRestSensor(sensor);
+            sensorIngestionService.forwardNormalizedEvent(event);
+        } catch (Exception e) {
+            System.err.println("Errore durante il processing del sensore REST "
+                    + sensor.getSensor_id() + ": " + e.getMessage());
+        }
+    }
+
+    @Scheduled(fixedDelayString = "${ingestion.rest.polling-delay-ms:10000}")
+    public void pollAllRestSensors() {
+        try {
+            URL discoveryUrl = new URL(DR_URL + "/discovery");
+
+            try (InputStream input = discoveryUrl.openStream()) {
+                DiscoveryResponse dr = mapper.readValue(input, DiscoveryResponse.class);
+                List<RestSensor> sensors = dr.getRest_sensors();
+
+                for (RestSensor sensor : sensors) {
+                    processSingleRestSensor(sensor);
+                }
+            }
+        } catch (Exception e) {
+            System.err.println("Errore durante Rest Polling Discovery: " + e.getMessage());
+        }
     }
 }

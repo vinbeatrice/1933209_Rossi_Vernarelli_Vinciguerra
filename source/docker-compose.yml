@@ -5,13 +5,50 @@ services:
     ports:
       - "8080:8080"
 
+  rabbitmq:
+    image: rabbitmq:4-management
+    ports:
+      - "5672:5672"
+      - "15672:15672"
+
+  postgres:
+    image: postgres:16
+    environment:
+      POSTGRES_DB: mars
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+
   ingestion:
     build: ./ingestion
     ports:
       - "8081:8081"
-  
-# rabbitmq:
-#   image: rabbitmq:management
-#     ports:
-#       - "5672:5672"
-#       - "15672:15672"
+    depends_on:
+      - simulator
+      - rabbitmq
+    environment:
+      SIMULATOR_BASE_URL: http://simulator:8080
+      SPRING_RABBITMQ_HOST: rabbitmq
+
+  processing:
+    build: ./processing
+    ports:
+      - "8082:8082"
+    depends_on:
+      - postgres
+      - rabbitmq
+      - simulator
+    environment:
+      SPRING_DATASOURCE_URL: jdbc:postgresql://postgres:5432/mars
+      SPRING_DATASOURCE_USERNAME: postgres
+      SPRING_DATASOURCE_PASSWORD: postgres
+      SPRING_DATASOURCE_DRIVER_CLASS_NAME: org.postgresql.Driver
+      SPRING_JPA_HIBERNATE_DDL_AUTO: update
+      SPRING_RABBITMQ_HOST: rabbitmq
+      SIMULATOR_BASE_URL: http://simulator:8080
+
+volumes:
+  postgres_data:

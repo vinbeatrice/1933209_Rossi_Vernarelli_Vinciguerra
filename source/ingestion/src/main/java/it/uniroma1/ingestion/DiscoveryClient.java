@@ -1,9 +1,6 @@
 package it.uniroma1.ingestion;
 
 import it.uniroma1.ingestion.normalization_helpers.*;
-import it.uniroma1.ingestion.rest_normalization.*;
-import it.uniroma1.ingestion.telemetry_normalization.*;
-import java.io.IOException;
 import java.io.InputStream;
 import java.net.URL;
 import java.util.List;
@@ -12,19 +9,16 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RestController;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.databind.JsonNode;
 import org.springframework.web.servlet.mvc.method.annotation.SseEmitter;
 
 
 @RestController
 public class DiscoveryClient {
     private static final String BASE_URL = "http://simulator:8080/api";
-    private final NormalizerRegistry normalizerRegistry;
     private final RestPollingService restPollingService;
     private final TelemetrySubscriberService telemetrySubscriberService;
 
-    public DiscoveryClient(NormalizerRegistry normalizerRegistry, RestPollingService restPollingService, TelemetrySubscriberService telemetrySubscriberService) {
-        this.normalizerRegistry = normalizerRegistry;
+    public DiscoveryClient(RestPollingService restPollingService, TelemetrySubscriberService telemetrySubscriberService) {
         this.restPollingService = restPollingService;
         this.telemetrySubscriberService = telemetrySubscriberService;
 

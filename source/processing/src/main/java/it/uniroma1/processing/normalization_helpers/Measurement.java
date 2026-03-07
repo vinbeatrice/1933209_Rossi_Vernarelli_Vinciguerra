@@ -1,4 +1,4 @@
-package it.uniroma1.ingestion.normalization_helpers;
+package it.uniroma1.processing.normalization_helpers;
 
 public class Measurement {
     private String metric;

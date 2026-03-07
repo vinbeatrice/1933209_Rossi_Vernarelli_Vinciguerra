@@ -1,7 +1,6 @@
 package it.uniroma1.ingestion.telemetry_normalization;
 
 import it.uniroma1.ingestion.normalization_helpers.*;
-import it.uniroma1.ingestion.rest_normalization.*;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import org.springframework.stereotype.Component;
