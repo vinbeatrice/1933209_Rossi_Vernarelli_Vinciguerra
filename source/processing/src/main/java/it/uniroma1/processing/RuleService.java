@@ -38,6 +38,7 @@ public class RuleService {
         rule.setTargetState(updatedRule.getTargetState());
         rule.setEnabled(updatedRule.isEnabled());
         rule.setDescription(updatedRule.getDescription());
+        rule.setMetric(updatedRule.getMetric());
 
         return ruleRepository.save(rule);
     }

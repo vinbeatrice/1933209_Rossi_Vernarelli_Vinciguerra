@@ -24,6 +24,7 @@ public class RuleEvaluationService {
                 automationRuleRepository.findBySensorNameAndEnabledTrue(event.getSourceId());
 
         for (AutomationRule rule : rules) {
+            System.out.println("Evaluating rule " + rule.getId());
             if (matches(rule, event)) {
                 actuatorClientService.apply(rule.getActuatorName(), rule.getTargetState());
                 System.out.println("Rule triggered: " + rule.getId());
@@ -41,6 +42,7 @@ public class RuleEvaluationService {
         for (Measurement m : sensorMeasurements) {
             if (m.getMetric().equals(ruleMetric)) {
                 sensorValue = m.getValue();
+                System.out.println("Evaluating rule " + rule.getId() + ": " + sensorValue + " " + operator + " " + threshold);
                 return switch (operator) {
                     case ">" -> sensorValue > threshold;
                     case ">=" -> sensorValue >= threshold;

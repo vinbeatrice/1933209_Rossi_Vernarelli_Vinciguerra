@@ -46,6 +46,7 @@ public class RestPollingService {
     public void processSingleRestSensor(RestSensor sensor) {
         try {
             NormalizedEvent event = fetchAndNormalizeRestSensor(sensor);
+            System.out.println("Fetched REST sensor: " + sensor.getSensor_id() + " with data: " + event);
             sensorIngestionService.forwardNormalizedEvent(event);
         } catch (Exception e) {
             System.err.println("Errore durante il processing del sensore REST "
