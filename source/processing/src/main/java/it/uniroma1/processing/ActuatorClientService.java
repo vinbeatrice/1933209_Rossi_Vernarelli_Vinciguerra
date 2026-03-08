@@ -9,6 +9,8 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
 
+import it.uniroma1.processing.actuators_helpers.ActuatorsResponse;
+
 @Service
 public class ActuatorClientService {
 

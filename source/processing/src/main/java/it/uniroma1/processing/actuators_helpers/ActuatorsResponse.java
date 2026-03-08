@@ -1,4 +1,4 @@
-package it.uniroma1.processing;
+package it.uniroma1.processing.actuators_helpers;
 
 import java.util.Map;
 
@@ -16,4 +16,4 @@ public class ActuatorsResponse {
     public void setActuators(Map<String, String> actuators) {
         this.actuators = actuators;
     }
-} 
+}

@@ -1,0 +1,143 @@
+.page-header {
+    padding: 24px;
+}
+
+.page-header h1 {
+    margin: 0 0 8px 0;
+    font-size: 2rem;
+}
+
+.page-header p {
+    margin: 0;
+    color: #666;
+}
+
+.actuators-grid {
+    padding: 0 24px 24px 24px;
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+    gap: 20px;
+}
+
+.actuator-card {
+    background: white;
+    border-radius: 16px;
+    padding: 20px;
+    border: 1px solid #e5e7eb;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+    display: flex;
+    flex-direction: column;
+    gap: 18px;
+}
+
+.actuator-name {
+    font-size: 1.1rem;
+    font-weight: bold;
+    color: #222;
+}
+
+.actuator-state {
+    font-size: 1rem;
+    color: #555;
+}
+
+.actuator-state-value {
+    font-weight: bold;
+}
+
+.state-on {
+    color: #16a34a;
+}
+
+.state-off {
+    color: #dc2626;
+}
+
+.actuator-control {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.status-label {
+    font-size: 0.95rem;
+    color: #444;
+}
+
+.switch {
+    position: relative;
+    display: inline-block;
+    width: 52px;
+    height: 28px;
+}
+
+.switch input {
+    opacity: 0;
+    width: 0;
+    height: 0;
+}
+
+.slider {
+    position: absolute;
+    inset: 0;
+    cursor: pointer;
+    background-color: #cbd5e1;
+    border-radius: 28px;
+    transition: 0.3s;
+}
+
+.slider:before {
+    content: "";
+    position: absolute;
+    height: 22px;
+    width: 22px;
+    left: 3px;
+    top: 3px;
+    background-color: white;
+    border-radius: 50%;
+    transition: 0.3s;
+}
+
+.switch input:checked + .slider {
+    background-color: #22c55e;
+}
+
+.switch input:checked + .slider:before {
+    transform: translateX(24px);
+}
+
+.empty-message {
+    padding: 24px;
+    color: #666;
+    font-style: italic;
+}
+
+.navbar {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 14px 24px;
+    background-color: #1f2937;
+    color: white;
+}
+
+.nav-brand {
+    font-weight: bold;
+    font-size: 1.1rem;
+}
+
+.nav-links {
+    display: flex;
+    gap: 16px;
+    flex-wrap: wrap;
+}
+
+.nav-links a {
+    color: white;
+    text-decoration: none;
+    font-size: 0.95rem;
+}
+
+.nav-links a:hover {
+    text-decoration: underline;
+}
