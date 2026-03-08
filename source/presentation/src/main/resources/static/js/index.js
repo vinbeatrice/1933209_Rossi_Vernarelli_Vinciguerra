@@ -152,8 +152,8 @@ async function updatePollingInterval() {
     const input = document.getElementById("pollingIntervalInput");
     const pollingDelayMs = parseInt(input.value, 10);
 
-    if (isNaN(pollingDelayMs) || pollingDelayMs < 1000) {
-        alert("Polling interval must be at least 1000 ms.");
+    if (isNaN(pollingDelayMs) || pollingDelayMs < 0) {
+        alert("Polling interval must be greater than 0 ms.");
         return;
     }
 

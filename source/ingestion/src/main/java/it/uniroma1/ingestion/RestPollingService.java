@@ -78,7 +78,7 @@ public class RestPollingService {
         }
     }
 
-    @Scheduled(fixedDelayString = "${ingestion.rest.polling-delay-ms:10000}")
+    //@Scheduled(fixedDelayString = "${ingestion.rest.polling-delay-ms:10000}")
     public void pollAllRestSensors() {
         try {
             URL discoveryUrl = new URL(DR_URL + "/discovery");
