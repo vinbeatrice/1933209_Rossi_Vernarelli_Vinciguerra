@@ -1,4 +1,4 @@
-package it.uniroma1.ingestion;
+package it.uniroma1.presentation;
 
 import org.springframework.amqp.core.Binding;
 import org.springframework.amqp.core.BindingBuilder;
@@ -11,25 +11,12 @@ import org.springframework.context.annotation.Configuration;
 public class RabbitMQConfig {
 
     public static final String EXCHANGE_NAME = "mars.events";
-    public static final String PROCESSING_QUEUE = "processing.sensor-events";
     public static final String PRESENTATION_QUEUE = "presentation.sensor-events";
     public static final String ROUTING_KEY = "sensor.reading";
 
     @Bean
     public TopicExchange sensorExchange() {
         return new TopicExchange(EXCHANGE_NAME);
-    }
-
-    @Bean
-    public Queue processingQueue() {
-        return new Queue(PROCESSING_QUEUE);
-    }
-
-    @Bean
-    public Binding processingBinding(Queue processingQueue, TopicExchange sensorExchange) {
-        return BindingBuilder.bind(processingQueue)
-                .to(sensorExchange)
-                .with(ROUTING_KEY);
     }
 
     @Bean

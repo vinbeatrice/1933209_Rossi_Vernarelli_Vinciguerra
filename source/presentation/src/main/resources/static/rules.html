@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Automation Rules</title>
+    <link rel="stylesheet" href="/css/style.css">
+</head>
+<body>
+    <h1>Automation Rules</h1>
+    <a href="/index.html">Back</a>
+
+    <h2>Create Rule</h2>
+    <form id="ruleForm">
+        <label>Sensor Name</label>
+        <input type="text" id="sensorName" required>
+
+        <label>Metric</label>
+        <input type="text" id="metric" required>
+
+        <label>Operator</label>
+        <select id="operator" required>
+            <option value=">">></option>
+            <option value=">=">>=</option>
+            <option value="<"><</option>
+            <option value="<="><=</option>
+            <option value="=">=</option>
+        </select>
+
+        <label>Threshold Value</label>
+        <input type="number" step="0.01" id="thresholdValue" required>
+
+        <label>Unit</label>
+        <input type="text" id="unit">
+
+        <label>Actuator Name</label>
+        <input type="text" id="actuatorName" required>
+
+        <label>Target State</label>
+        <input type="text" id="targetState" required>
+
+        <label>Enabled</label>
+        <select id="enabled">
+            <option value="true">true</option>
+            <option value="false">false</option>
+        </select>
+
+        <label>Description</label>
+        <input type="text" id="description">
+
+        <button type="submit">Create Rule</button>
+    </form>
+
+    <h2>Existing Rules</h2>
+    <table>
+        <thead>
+            <tr>
+                <th>ID</th>
+                <th>Sensor</th>
+                <th>Metric</th>
+                <th>Operator</th>
+                <th>Threshold</th>
+                <th>Unit</th>
+                <th>Actuator</th>
+                <th>Target State</th>
+                <th>Enabled</th>
+                <th>Description</th>
+            </tr>
+        </thead>
+        <tbody id="rulesTableBody"></tbody>
+    </table>
+
+    <script src="/js/rules.js"></script>
+</body>
+</html>

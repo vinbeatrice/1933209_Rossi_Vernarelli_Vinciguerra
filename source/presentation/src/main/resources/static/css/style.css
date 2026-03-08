@@ -1,0 +1,95 @@
+* {
+    box-sizing: border-box;
+}
+
+body {
+    margin: 0;
+    padding: 24px;
+    font-family: Arial, sans-serif;
+    background-color: #f4f6f8;
+    color: #222;
+}
+
+.page-header {
+    margin-bottom: 24px;
+}
+
+.page-header h1 {
+    margin: 0 0 8px 0;
+    font-size: 2rem;
+}
+
+.page-header p {
+    margin: 0;
+    color: #666;
+}
+
+.sensor-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+    gap: 20px;
+}
+
+.sensor-card {
+    background: white;
+    border-radius: 14px;
+    padding: 18px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+    min-height: 180px;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    border: 1px solid #e5e7eb;
+}
+
+.sensor-name {
+    font-size: 1rem;
+    font-weight: bold;
+    color: #333;
+    word-break: break-word;
+}
+
+.sensor-measurements {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    margin: 18px 0;
+}
+
+.measurement-row {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+}
+
+.measurement-metric {
+    font-size: 0.9rem;
+    color: #666;
+    margin-bottom: 4px;
+}
+
+.measurement-value {
+    font-size: 1.8rem;
+    font-weight: bold;
+    color: #111;
+}
+
+.measurement-unit {
+    font-size: 1rem;
+    color: #444;
+    margin-left: 4px;
+}
+
+.sensor-timestamp {
+    font-size: 0.85rem;
+    color: #777;
+    border-top: 1px solid #eee;
+    padding-top: 10px;
+    word-break: break-word;
+}
+
+.empty-message {
+    color: #666;
+    font-style: italic;
+}
