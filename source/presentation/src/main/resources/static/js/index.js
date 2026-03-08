@@ -1,3 +1,4 @@
+const INGESTION_BASE_URL = "http://localhost:8081";
 const latestMap = {};
 
 function formatTimestamp(timestamp) {
@@ -32,6 +33,10 @@ function createMeasurementHtml(measurement) {
     `;
 }
 
+function isRestSensor(event) {
+    return event.sourceType && event.sourceType.toUpperCase() === "REST";
+}
+
 function renderGrid() {
     const sensorGrid = document.getElementById("sensorGrid");
     sensorGrid.innerHTML = "";
@@ -56,14 +61,48 @@ function renderGrid() {
             ? measurements.map(createMeasurementHtml).join("")
             : `<div class="empty-message">No measurements available</div>`;
 
+        const refreshButtonHtml = isRestSensor(event)
+            ? `<button class="refresh-button" data-sensor-id="${sensorName}" title="Refresh sensor">⟳</button>`
+            : "";
+
         card.innerHTML = `
             <div class="sensor-name">${sensorName}</div>
             <div class="sensor-measurements">${measurementsHtml}</div>
             <div class="sensor-timestamp">${timestamp}</div>
+            ${refreshButtonHtml}
         `;
 
         sensorGrid.appendChild(card);
     });
+
+    bindRefreshButtons();
+}
+
+function bindRefreshButtons() {
+    document.querySelectorAll(".refresh-button").forEach(button => {
+        button.addEventListener("click", handleManualRefresh);
+    });
+}
+
+async function handleManualRefresh(event) {
+    const sensorId = event.target.dataset.sensorId;
+
+    try {
+        const response = await fetch(`${INGESTION_BASE_URL}/api/rest-sensors/${sensorId}/refresh`, {
+            method: "POST"
+        });
+
+        if (!response.ok) {
+            throw new Error("Unable to refresh sensor");
+        }
+
+        const updatedEvent = await response.json();
+        latestMap[updatedEvent.sourceId] = updatedEvent;
+        renderGrid();
+    } catch (error) {
+        console.error("Manual refresh failed:", error);
+        alert("Error refreshing sensor.");
+    }
 }
 
 async function loadInitialLatest() {
@@ -95,5 +134,52 @@ function connectSse() {
     };
 }
 
+async function loadPollingInterval() {
+    try {
+        const response = await fetch(`${INGESTION_BASE_URL}/api/rest-sensors/polling-interval`);
+        if (!response.ok) {
+            throw new Error("Unable to get polling interval");
+        }
+
+        const data = await response.json();
+        document.getElementById("pollingIntervalInput").value = data.pollingDelayMs;
+    } catch (error) {
+        console.error("Error loading polling interval:", error);
+    }
+}
+
+async function updatePollingInterval() {
+    const input = document.getElementById("pollingIntervalInput");
+    const pollingDelayMs = parseInt(input.value, 10);
+
+    if (isNaN(pollingDelayMs) || pollingDelayMs < 1000) {
+        alert("Polling interval must be at least 1000 ms.");
+        return;
+    }
+
+    try {
+        const response = await fetch(`${INGESTION_BASE_URL}/api/rest-sensors/polling-interval`, {
+            method: "PUT",
+            headers: {
+                "Content-Type": "application/json"
+            },
+            body: JSON.stringify({ pollingDelayMs })
+        });
+
+        if (!response.ok) {
+            throw new Error("Unable to update polling interval");
+        }
+
+        const data = await response.json();
+        input.value = data.pollingDelayMs;
+    } catch (error) {
+        console.error("Error updating polling interval:", error);
+        alert("Error updating polling interval.");
+    }
+}
+
+document.getElementById("savePollingIntervalBtn").addEventListener("click", updatePollingInterval);
+
 loadInitialLatest();
 connectSse();
+loadPollingInterval();

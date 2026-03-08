@@ -19,6 +19,7 @@ public class RestPollingService {
 
     private final NormalizerRegistry normalizerRegistry;
     private final SensorIngestionService sensorIngestionService;
+
     private final ObjectMapper mapper = new ObjectMapper();
 
     public RestPollingService(
@@ -28,6 +29,29 @@ public class RestPollingService {
         this.normalizerRegistry = normalizerRegistry;
         this.sensorIngestionService = sensorIngestionService;
     }
+
+    public RestSensor findRestSensorById(String sensorId) throws Exception {
+        URL discoveryUrl = new URL(DR_URL + "/discovery");
+        ObjectMapper mapper = new ObjectMapper();
+
+        try (InputStream input = discoveryUrl.openStream()) {
+            DiscoveryResponse dr = mapper.readValue(input, DiscoveryResponse.class);
+
+            return dr.getRest_sensors().stream()
+                    .filter(sensor -> sensor.getSensor_id().equals(sensorId))
+                    .findFirst()
+                    .orElseThrow(() -> new RuntimeException("Sensor not found: " + sensorId));
+        }
+    }
+
+    public NormalizedEvent refreshSingleRestSensor(String sensorId) throws Exception {
+        RestSensor sensor = findRestSensorById(sensorId);
+        NormalizedEvent event = fetchAndNormalizeRestSensor(sensor);
+        sensorIngestionService.forwardNormalizedEvent(event);
+
+        return event;
+    }
+
 
     public NormalizedEvent fetchAndNormalizeRestSensor(RestSensor sensor) throws Exception {
         String sensorId = sensor.getSensor_id();

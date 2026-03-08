@@ -7,9 +7,28 @@
     <link rel="stylesheet" href="/css/style.css">
 </head>
 <body>
+    <nav class="navbar">
+        <div class="nav-brand">Mars Control Panel</div>
+        <div class="nav-links">
+            <a href="/index.html">Dashboard</a>
+            <a href="/rules.html">Automation Rules</a>
+            <a href="/charts.html">Charts</a>
+        </div>
+    </nav>
+
     <header class="page-header">
-        <h1>Live Sensor Dashboard</h1>
-        <p>Latest measurement for each sensor</p>
+        <div>
+            <h1>Live Sensor Dashboard</h1>
+            <p>Latest measurement for each sensor</p>
+        </div>
+
+        <div class="polling-panel">
+            <label for="pollingIntervalInput">REST polling interval (ms)</label>
+            <div class="polling-panel-row">
+                <input type="number" id="pollingIntervalInput" min="1000" step="1000">
+                <button id="savePollingIntervalBtn" type="button">Update</button>
+            </div>
+        </div>
     </header>
 
     <main>

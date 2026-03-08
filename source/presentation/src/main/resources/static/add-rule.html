@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Add Automation Rule</title>
+    <link rel="stylesheet" href="/css/add-rule.css">
+</head>
+<body>
+    <nav class="navbar">
+        <div class="nav-brand">Mars Control Panel</div>
+        <div class="nav-links">
+            <a href="/index.html">Dashboard</a>
+            <a href="/rules.html">Automation Rules</a>
+            <a href="/charts.html">Charts</a>
+        </div>
+    </nav>
+    <header class="page-header">
+        <div>
+            <h1>Add Automation Rule</h1>
+            <p>Create a new rule for the automation engine</p>
+        </div>
+
+        <div class="header-actions">
+            <a href="/rules.html" class="secondary-button">Back to Rules</a>
+        </div>
+    </header>
+
+    <main>
+        <form id="addRuleForm" class="rule-form">
+            <label>Sensor Name</label>
+            <input type="text" id="sensorName" required>
+
+            <label>Metric</label>
+            <input type="text" id="metric" required>
+
+            <label>Operator</label>
+            <select id="operator" required>
+                <option value=">">></option>
+                <option value=">=">>=</option>
+                <option value="<"><</option>
+                <option value="<="><=</option>
+                <option value="=">=</option>
+            </select>
+
+            <label>Threshold Value</label>
+            <input type="number" step="0.01" id="thresholdValue" required>
+
+            <label>Unit</label>
+            <input type="text" id="unit">
+
+            <label>Actuator Name</label>
+            <input type="text" id="actuatorName" required>
+
+            <label>Target State</label>
+            <input type="text" id="targetState" required>
+
+            <label>Enabled</label>
+            <select id="enabled">
+                <option value="true">true</option>
+                <option value="false">false</option>
+            </select>
+
+            <label>Description</label>
+            <input type="text" id="description">
+
+            <button type="submit" class="primary-button">Create Rule</button>
+        </form>
+    </main>
+
+    <script src="/js/add-rule.js"></script>
+</body>
+</html>

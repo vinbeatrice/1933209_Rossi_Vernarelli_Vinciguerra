@@ -6,6 +6,7 @@ import java.net.URL;
 import java.util.List;
 
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RestController;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -88,14 +89,14 @@ public class DiscoveryClient {
         // 6. Lo restituisco come risposta HTTP
         return normalizedEvent;
     }*/
-   public NormalizedEvent getNormalizedRestSensor(@PathVariable("sensor_id") String sensorId) throws Exception {
+    public NormalizedEvent getNormalizedRestSensor(@PathVariable("sensor_id") String sensorId) throws Exception {
 
         RestSensor sensor = findRestSensorById(sensorId);
 
         return restPollingService.fetchAndNormalizeRestSensor(sensor);
     }
 
-    private RestSensor findRestSensorById(String sensorId) throws Exception {
+    public RestSensor findRestSensorById(String sensorId) throws Exception {
         URL discoveryUrl = new URL(BASE_URL + "/discovery");
         ObjectMapper mapper = new ObjectMapper();
 
@@ -107,6 +108,11 @@ public class DiscoveryClient {
                     .findFirst()
                     .orElseThrow(() -> new RuntimeException("Sensor not found: " + sensorId));
         }
+    }
+
+    @PostMapping("/api/rest-sensors/{sensorId}/refresh")
+    public NormalizedEvent refreshSingleRestSensor(@PathVariable String sensorId) throws Exception {
+        return restPollingService.refreshSingleRestSensor(sensorId);
     }
 
 

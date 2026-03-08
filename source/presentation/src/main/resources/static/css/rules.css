@@ -1,0 +1,278 @@
+* {
+    box-sizing: border-box;
+}
+
+body {
+    margin: 0;
+    padding: 24px;
+    font-family: Arial, sans-serif;
+    background-color: #f4f6f8;
+    color: #222;
+}
+
+.page-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    gap: 16px;
+    margin-bottom: 24px;
+}
+
+.page-header h1 {
+    margin: 0 0 8px 0;
+    font-size: 2rem;
+}
+
+.page-header p {
+    margin: 0;
+    color: #666;
+}
+
+.header-actions {
+    display: flex;
+    gap: 12px;
+    flex-wrap: wrap;
+}
+
+.primary-button,
+.secondary-button,
+.action-button,
+.delete-button,
+.save-button {
+    display: inline-block;
+    text-decoration: none;
+    border: none;
+    border-radius: 10px;
+    padding: 10px 16px;
+    font-size: 0.95rem;
+    cursor: pointer;
+    transition: opacity 0.2s ease;
+}
+
+.primary-button {
+    background-color: #2563eb;
+    color: white;
+}
+
+.secondary-button {
+    background-color: #e5e7eb;
+    color: #222;
+}
+
+.action-button {
+    background-color: #e5e7eb;
+    color: #222;
+}
+
+.save-button {
+    background-color: #16a34a;
+    color: white;
+}
+
+.delete-button {
+    background-color: #dc2626;
+    color: white;
+}
+
+.primary-button:hover,
+.secondary-button:hover,
+.action-button:hover,
+.delete-button:hover,
+.save-button:hover {
+    opacity: 0.9;
+}
+
+.rules-container {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(340px, 1fr));
+    gap: 20px;
+}
+
+.rule-card {
+    background: white;
+    border-radius: 16px;
+    padding: 20px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+    border: 1px solid #e5e7eb;
+    display: flex;
+    flex-direction: column;
+    gap: 18px;
+}
+
+.rule-card.disabled {
+    opacity: 0.75;
+}
+
+.rule-top {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    gap: 12px;
+}
+
+.rule-title {
+    font-size: 1.05rem;
+    font-weight: bold;
+    margin: 0 0 6px 0;
+    color: #222;
+}
+
+.rule-description {
+    margin: 0;
+    font-size: 0.92rem;
+    color: #666;
+}
+
+.rule-status {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    white-space: nowrap;
+}
+
+.status-label {
+    font-size: 0.9rem;
+    color: #444;
+}
+
+.switch {
+    position: relative;
+    display: inline-block;
+    width: 52px;
+    height: 28px;
+}
+
+.switch input {
+    opacity: 0;
+    width: 0;
+    height: 0;
+}
+
+.slider {
+    position: absolute;
+    inset: 0;
+    cursor: pointer;
+    background-color: #cbd5e1;
+    border-radius: 28px;
+    transition: 0.3s;
+}
+
+.slider:before {
+    content: "";
+    position: absolute;
+    height: 22px;
+    width: 22px;
+    left: 3px;
+    top: 3px;
+    background-color: white;
+    border-radius: 50%;
+    transition: 0.3s;
+}
+
+.switch input:checked + .slider {
+    background-color: #22c55e;
+}
+
+.switch input:checked + .slider:before {
+    transform: translateX(24px);
+}
+
+.rule-body {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 14px 18px;
+}
+
+.rule-field {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+}
+
+.rule-field.full-width {
+    grid-column: 1 / -1;
+}
+
+.field-label {
+    font-size: 0.82rem;
+    color: #666;
+    text-transform: uppercase;
+    letter-spacing: 0.03em;
+}
+
+.field-value {
+    font-size: 1rem;
+    color: #222;
+    word-break: break-word;
+}
+
+.threshold-editor {
+    display: flex;
+    gap: 8px;
+    align-items: center;
+    flex-wrap: wrap;
+}
+
+.threshold-input {
+    width: 110px;
+    padding: 8px 10px;
+    border: 1px solid #cbd5e1;
+    border-radius: 10px;
+    font-size: 0.95rem;
+}
+
+.rule-actions {
+    display: flex;
+    justify-content: flex-end;
+    gap: 10px;
+    flex-wrap: wrap;
+    border-top: 1px solid #edf2f7;
+    padding-top: 14px;
+}
+
+.empty-message {
+    color: #666;
+    font-style: italic;
+    background: white;
+    border-radius: 14px;
+    padding: 20px;
+    border: 1px solid #e5e7eb;
+}
+
+.info-message {
+    margin-bottom: 16px;
+    padding: 12px 14px;
+    border-radius: 10px;
+    background-color: #e0f2fe;
+    color: #075985;
+}
+
+.navbar {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 14px 24px;
+    background-color: #1f2937;
+    color: white;
+}
+
+.nav-brand {
+    font-weight: bold;
+    font-size: 1.1rem;
+}
+
+.nav-links {
+    display: flex;
+    gap: 16px;
+    flex-wrap: wrap;
+}
+
+.nav-links a {
+    color: white;
+    text-decoration: none;
+    font-size: 0.95rem;
+}
+
+.nav-links a:hover {
+    text-decoration: underline;
+}
