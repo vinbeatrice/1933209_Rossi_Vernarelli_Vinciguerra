@@ -87,6 +87,83 @@ function computeStats(values) {
     };
 }
 
+function downloadCanvasAsPdf(canvas, fileName, titleText, stats) {
+    const imageData = canvas.toDataURL("image/png");
+
+    const pdfWindow = window.open("", "_blank");
+    if (!pdfWindow) {
+        alert("Popup blocked. Please allow popups to export the PDF.");
+        return;
+    }
+
+    pdfWindow.document.write(`
+        <html>
+        <head>
+            <title>${fileName}</title>
+            <style>
+                body {
+                    font-family: Arial, sans-serif;
+                    margin: 24px;
+                }
+                h1 {
+                    font-size: 20px;
+                    margin-bottom: 12px;
+                }
+                .stats {
+                    margin-bottom: 16px;
+                    font-size: 14px;
+                }
+                img {
+                    max-width: 100%;
+                    border: 1px solid #ccc;
+                }
+            </style>
+        </head>
+        <body>
+            <h1>${titleText}</h1>
+            <div class="stats">
+                <div>Min: ${stats.min}</div>
+                <div>Max: ${stats.max}</div>
+                <div>Avg: ${stats.avg}</div>
+            </div>
+            <img src="${imageData}" />
+        </body>
+        </html>
+    `);
+
+    pdfWindow.document.close();
+    pdfWindow.focus();
+
+    setTimeout(() => {
+        pdfWindow.print();
+    }, 500);
+}
+
+function handleExportPdf(event) {
+    const metric = event.target.dataset.metric;
+    const safeMetricId = metric.replace(/[^a-zA-Z0-9_-]/g, "_");
+    const canvas = document.getElementById(`chart-${safeMetricId}`);
+
+    if (!canvas) {
+        alert("Chart not found.");
+        return;
+    }
+
+    const { values } = buildMetricSeries(sensorHistory, metric);
+    const stats = computeStats(values);
+
+    const fileName = `${sensorId}-${metric}.pdf`;
+    const titleText = `Sensor: ${sensorId} | Metric: ${metric}`;
+
+    downloadCanvasAsPdf(canvas, fileName, titleText, stats);
+}
+
+function bindExportButtons() {
+    document.querySelectorAll(".export-pdf-button").forEach(button => {
+        button.addEventListener("click", handleExportPdf);
+    });
+}
+
 function renderChartsGrid(history) {
     const chartsGrid = document.getElementById("chartsGrid");
     chartsGrid.innerHTML = "";
@@ -126,6 +203,10 @@ function renderChartsGrid(history) {
                     <span class="stat-label">Avg</span>
                     <span id="${statAvgId}" class="stat-value">-</span>
                 </div>
+
+                <button class="export-pdf-button" data-metric="${metric}">
+                    Export PDF
+                </button>
             </div>
 
             <canvas id="${canvasId}"></canvas>
@@ -169,6 +250,8 @@ function renderChartsGrid(history) {
             }
         });
     });
+
+    bindExportButtons();
 }
 
 function updateCharts(history) {

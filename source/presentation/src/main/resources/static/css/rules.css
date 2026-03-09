@@ -47,6 +47,7 @@ body {
     font-size: 0.95rem;
     cursor: pointer;
     transition: opacity 0.2s ease;
+    margin-top: 5px;
 }
 
 .primary-button {

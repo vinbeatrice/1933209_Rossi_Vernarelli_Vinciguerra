@@ -15,6 +15,7 @@ async function fetchRules() {
 async function loadRules() {
     try {
         rulesCache = await fetchRules();
+        rulesCache.sort((a, b) => a.id - b.id);
         renderRules();
     } catch (error) {
         console.error("Error loading rules:", error);
