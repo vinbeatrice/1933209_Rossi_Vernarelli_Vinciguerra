@@ -16,7 +16,7 @@ public class RabbitMQConfig {
 
     public static final String NOTIFICATION_EXCHANGE_NAME = "mars.notifications";
     public static final String PRESENTATION_RULE_QUEUE = "presentation.rule-events";
-    public static final String RULE_TRIGGERED_ROUTING_KEY = "rue.triggered";
+    public static final String RULE_TRIGGERED_ROUTING_KEY = "rule.triggered";
 
     public static final String PRESENTATION_ACTUATOR_QUEUE = "presentation.actuator-events";
     public static final String ACTUATOR_UPDATED_ROUTING_KEY = "actuator.updated";

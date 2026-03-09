@@ -1,10 +1,10 @@
 package it.uniroma1.presentation;
 
-import java.util.List;
+import java.util.*;
 
 import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.mvc.method.annotation.SseEmitter;
 
 import it.uniroma1.presentation.normalization_helpers.NormalizedEvent;
@@ -26,9 +26,14 @@ public class SensorPresentationController {
         return sensorCacheService.getAllLatest();
     }
 
-    @GetMapping("/api/sensors/history/{sensorId}")
-    public List<NormalizedEvent> getHistory(@PathVariable String sensorId) {
+    @GetMapping("/api/sensors/history")
+    public List<NormalizedEvent> getHistory(@RequestParam String sensorId) {
         return sensorCacheService.getHistory(sensorId);
+    }
+
+    @GetMapping("/api/sensors/history/all")
+    public Map<String, List<NormalizedEvent>> getAllHistory() {
+        return sensorCacheService.getAllHistory();
     }
 
     @GetMapping("/api/sensors/stream")

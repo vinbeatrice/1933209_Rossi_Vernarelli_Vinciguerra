@@ -130,7 +130,11 @@ function renderGrid() {
             : "";
 
         card.innerHTML = `
-            <div class="sensor-name">${sensorName}</div>
+            <div class="sensor-name">
+                <a class="sensor-link" href="/sensor-detail.html?sensorId=${encodeURIComponent(sensorName)}">
+                    ${sensorName}
+                </a>
+            </div>
             <div class="sensor-measurements">${measurementsHtml}</div>
             <div class="sensor-timestamp">${timestamp}</div>
             ${refreshButtonHtml}

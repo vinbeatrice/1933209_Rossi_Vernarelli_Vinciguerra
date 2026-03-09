@@ -1,7 +1,8 @@
 package it.uniroma1.presentation;
 
 import java.io.IOException;
-import java.util.*;
+import java.util.List;
+import java.util.Map;
 import java.util.concurrent.CopyOnWriteArrayList;
 
 import org.springframework.stereotype.Service;
@@ -21,7 +22,7 @@ public class SensorSseService {
 
         emitter.onCompletion(() -> emitters.remove(emitter));
         emitter.onTimeout(() -> emitters.remove(emitter));
-        emitter.onError((ex) -> emitters.remove(emitter));
+        emitter.onError(ex -> emitters.remove(emitter));
 
         return emitter;
     }
@@ -32,9 +33,8 @@ public class SensorSseService {
                 emitter.send(SseEmitter.event()
                         .name("sensor-event")
                         .data(event));
-            } catch (IOException e) {
-                emitter.complete();
-                emitters.remove(emitter);
+            } catch (IOException | IllegalStateException e) {
+                safeRemoveEmitter(emitter);
             }
         }
     }
@@ -45,27 +45,34 @@ public class SensorSseService {
                 emitter.send(SseEmitter.event()
                         .name("rule-triggered")
                         .data(event));
-            } catch (IOException e) {
-                emitter.complete();
-                emitters.remove(emitter);
+            } catch (IOException | IllegalStateException e) {
+                safeRemoveEmitter(emitter);
             }
         }
     }
 
     public void broadcastActuatorState(String actuatorName, String state) {
         Map<String, String> payload = Map.of(
-            "actuatorName", actuatorName,
-            "state", state
+                "actuatorName", actuatorName,
+                "state", state
         );
+
         for (SseEmitter emitter : emitters) {
             try {
                 emitter.send(SseEmitter.event()
                         .name("actuator-state")
                         .data(payload));
-            } catch (IOException e) {
-                emitter.complete();
-                emitters.remove(emitter);
+            } catch (IOException | IllegalStateException e) {
+                safeRemoveEmitter(emitter);
             }
         }
+    }
+
+    private void safeRemoveEmitter(SseEmitter emitter) {
+        try {
+            emitter.complete();
+        } catch (Exception ignored) {
+        }
+        emitters.remove(emitter);
     }
 }

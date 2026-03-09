@@ -38,4 +38,8 @@ public class SensorCacheService {
     public List<NormalizedEvent> getHistory(String sensorId) {
         return historyBySensor.getOrDefault(sensorId, Collections.emptyList());
     }
+
+    public Map<String, List<NormalizedEvent>> getAllHistory(){
+        return historyBySensor;
+    }
 }
