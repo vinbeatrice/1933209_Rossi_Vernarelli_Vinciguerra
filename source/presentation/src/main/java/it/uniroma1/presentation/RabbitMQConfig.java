@@ -18,6 +18,9 @@ public class RabbitMQConfig {
     public static final String PRESENTATION_RULE_QUEUE = "presentation.rule-events";
     public static final String RULE_TRIGGERED_ROUTING_KEY = "rue.triggered";
 
+    public static final String PRESENTATION_ACTUATOR_QUEUE = "presentation.actuator-events";
+    public static final String ACTUATOR_UPDATED_ROUTING_KEY = "actuator.updated";
+
     @Bean
     public TopicExchange sensorExchange() {
         return new TopicExchange(SENSOR_EXCHANGE_NAME);
@@ -50,5 +53,18 @@ public class RabbitMQConfig {
         return BindingBuilder.bind(presentationRuleQueue)
                 .to(notificationExchange)
                 .with(RULE_TRIGGERED_ROUTING_KEY);
+    }
+
+    @Bean
+    public Queue presentationActuatorQueue() {
+        return new Queue(PRESENTATION_ACTUATOR_QUEUE, true);
+    }
+
+    @Bean
+    public Binding presentationActuatorBinding(Queue presentationActuatorQueue,
+                                            TopicExchange notificationExchange) {
+        return BindingBuilder.bind(presentationActuatorQueue)
+                .to(notificationExchange)
+                .with(ACTUATOR_UPDATED_ROUTING_KEY);
     }
 }

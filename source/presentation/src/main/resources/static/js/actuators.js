@@ -24,8 +24,7 @@ function renderActuators() {
     }
 
     actuatorNames.forEach(name => {
-        const actuator = actuatorsCache[name];
-        const state = actuator?.state ?? "OFF";
+        const state = actuatorsCache[name] ?? "UNKNOWN";
         const isOn = state.toUpperCase() === "ON";
 
         const card = document.createElement("div");
@@ -79,7 +78,7 @@ async function handleToggleActuator(event) {
             throw new Error("Unable to update actuator");
         }
 
-        actuatorsCache[actuatorName] = { state: targetState };
+        actuatorsCache[actuatorName] = targetState;
         renderActuators();
     } catch (error) {
         console.error("Error updating actuator:", error);
@@ -99,4 +98,28 @@ async function loadActuators() {
     }
 }
 
-loadActuators();
+function connectSse() {
+    const eventSource = new EventSource("/api/sensors/stream");
+
+    eventSource.addEventListener("actuator-state", function(event) {
+        const data = JSON.parse(event.data);
+        actuatorsCache[data.actuatorName] = data.state;
+        renderActuators();
+    });
+
+    eventSource.addEventListener("rule-triggered", function(event) {
+        const data = JSON.parse(event.data);
+        console.log("Rule triggered -> actuator update:", data.actuatorName, data.targetState);
+    });
+
+    eventSource.onerror = function(error) {
+        console.error("SSE connection error:", error);
+    };
+}
+
+async function initPage() {
+    await loadActuators();
+    connectSse();
+}
+
+initPage();
