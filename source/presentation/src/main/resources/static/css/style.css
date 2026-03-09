@@ -185,3 +185,35 @@ body {
     color: #666;
     font-style: italic;
 }
+
+.latest-rule-panel {
+    margin: 0 24px 24px 24px;
+    background: white;
+    border-radius: 14px;
+    padding: 18px;
+    border: 1px solid #e5e7eb;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+}
+
+.latest-rule-panel h2 {
+    margin: 0 0 12px 0;
+    font-size: 1.2rem;
+}
+
+.rule-triggered-box {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+    color: #222;
+}
+
+.sensor-card.rule-warning {
+    border: 2px solid #f59e0b;
+    box-shadow: 0 0 0 3px rgba(245, 158, 11, 0.15);
+}
+
+.measurement-row.threshold-reached {
+    background-color: #fff7ed;
+    border-radius: 10px;
+    padding: 8px;
+}

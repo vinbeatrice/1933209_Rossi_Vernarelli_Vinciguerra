@@ -1,5 +1,8 @@
 const INGESTION_BASE_URL = "http://localhost:8081";
+const PROCESSING_BASE_URL = "http://localhost:8082";
 const latestMap = {};
+let activeRules = [];
+let latestTriggeredRule = null;
 
 function formatTimestamp(timestamp) {
     if (!timestamp) {
@@ -17,18 +20,77 @@ function formatTimestamp(timestamp) {
     }
 }
 
-function createMeasurementHtml(measurement) {
+function isRuleSatisfied(rule, measurement) {
+    if (!rule || !measurement) {
+        return false;
+    }
+
+    if ((rule.metric ?? "").toLowerCase() !== (measurement.metric ?? "").toLowerCase()) {
+        return false;
+    }
+
+    const sensorValue = measurement.value;
+    const threshold = rule.thresholdValue;
+    const operator = rule.operator;
+
+    switch (operator) {
+        case ">":
+            return sensorValue > threshold;
+        case ">=":
+            return sensorValue >= threshold;
+        case "<":
+            return sensorValue < threshold;
+        case "<=":
+            return sensorValue <= threshold;
+        case "=":
+            return Math.abs(sensorValue - threshold) < 0.0001;
+        default:
+            return false;
+    }
+}
+
+function getMatchingRulesForMeasurement(event, measurement) {
+    return activeRules.filter(rule =>
+        rule.enabled === true &&
+        rule.sensorName === event.sourceId &&
+        isRuleSatisfied(rule, measurement)
+    );
+}
+
+function createMeasurementHtml(event, measurement) {
     const metric = measurement.metric ?? "";
     const value = measurement.value ?? "";
     const unit = measurement.unit ?? "";
 
+    const matchingRules = getMatchingRulesForMeasurement(event, measurement);
+    const thresholdClass = matchingRules.length > 0 ? "threshold-reached" : "";
+
     return `
-        <div class="measurement-row">
+        <div class="measurement-row ${thresholdClass}">
             <div class="measurement-metric">${metric}</div>
             <div>
                 <span class="measurement-value">${value}</span>
                 <span class="measurement-unit">${unit}</span>
             </div>
+        </div>
+    `;
+}
+
+function renderLatestTriggeredRule() {
+    const content = document.getElementById("latestRuleContent");
+
+    if (!latestTriggeredRule) {
+        content.innerHTML = `No rule triggered yet.`;
+        return;
+    }
+
+    content.innerHTML = `
+        <div class="rule-triggered-box">
+            <div><strong>Rule #${latestTriggeredRule.ruleId}</strong></div>
+            <div>Sensor: ${latestTriggeredRule.sensorName}</div>
+            <div>Condition: ${latestTriggeredRule.metric} ${latestTriggeredRule.operator} ${latestTriggeredRule.thresholdValue} ${latestTriggeredRule.unit ?? ""}</div>
+            <div>Actuator: ${latestTriggeredRule.actuatorName} → ${latestTriggeredRule.targetState}</div>
+            <div>Timestamp: ${formatTimestamp(latestTriggeredRule.timestamp)}</div>
         </div>
     `;
 }
@@ -51,14 +113,16 @@ function renderGrid() {
 
     events.forEach(event => {
         const card = document.createElement("div");
-        card.className = "sensor-card";
+
+        const measurements = event.measurements ?? [];
+        const hasWarning = measurements.some(m => getMatchingRulesForMeasurement(event, m).length > 0);
+        card.className = hasWarning ? "sensor-card rule-warning" : "sensor-card";
 
         const sensorName = event.sourceId ?? "Unknown sensor";
-        const measurements = event.measurements ?? [];
         const timestamp = formatTimestamp(event.timestamp);
 
         const measurementsHtml = measurements.length > 0
-            ? measurements.map(createMeasurementHtml).join("")
+            ? measurements.map(m => createMeasurementHtml(event, m)).join("")
             : `<div class="empty-message">No measurements available</div>`;
 
         const refreshButtonHtml = isRestSensor(event)
@@ -120,6 +184,29 @@ async function loadInitialLatest() {
     }
 }
 
+async function loadRules(shouldRenderGrid = false) {
+    const response = await fetch(`${PROCESSING_BASE_URL}/rules`);
+    if (!response.ok) {
+        throw new Error("Unable to load rules");
+    }
+
+    activeRules = await response.json();
+
+    if (shouldRenderGrid) {
+        renderGrid();
+    }
+}
+
+async function loadLatestTriggeredRule() {
+    const response = await fetch("/api/rules/latest-triggered");
+    if (!response.ok) {
+        return;
+    }
+
+    latestTriggeredRule = await response.json();
+    renderLatestTriggeredRule();
+}
+
 function connectSse() {
     const eventSource = new EventSource("/api/sensors/stream");
 
@@ -127,6 +214,12 @@ function connectSse() {
         const data = JSON.parse(event.data);
         latestMap[data.sourceId] = data;
         renderGrid();
+    });
+
+    eventSource.addEventListener("rule-triggered", function(event) {
+        const data = JSON.parse(event.data);
+        latestTriggeredRule = data;
+        renderLatestTriggeredRule();
     });
 
     eventSource.onerror = function(error) {
@@ -180,6 +273,13 @@ async function updatePollingInterval() {
 
 document.getElementById("savePollingIntervalBtn").addEventListener("click", updatePollingInterval);
 
-loadInitialLatest();
-connectSse();
-loadPollingInterval();
+async function initPage() {
+    await loadInitialLatest();
+    await loadRules(true);
+    await loadLatestTriggeredRule();
+    connectSse();
+    loadPollingInterval();
+}
+
+initPage();
+setInterval(() => loadRules(false), 10000);

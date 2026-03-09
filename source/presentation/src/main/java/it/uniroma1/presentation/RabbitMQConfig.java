@@ -10,24 +10,45 @@ import org.springframework.context.annotation.Configuration;
 @Configuration
 public class RabbitMQConfig {
 
-    public static final String EXCHANGE_NAME = "mars.events";
+    public static final String SENSOR_EXCHANGE_NAME = "mars.events";
     public static final String PRESENTATION_QUEUE = "presentation.sensor-events";
-    public static final String ROUTING_KEY = "sensor.reading";
+    public static final String SENSOR_ROUTING_KEY = "sensor.reading";
+
+    public static final String NOTIFICATION_EXCHANGE_NAME = "mars.notifications";
+    public static final String PRESENTATION_RULE_QUEUE = "presentation.rule-events";
+    public static final String RULE_TRIGGERED_ROUTING_KEY = "rue.triggered";
 
     @Bean
     public TopicExchange sensorExchange() {
-        return new TopicExchange(EXCHANGE_NAME);
+        return new TopicExchange(SENSOR_EXCHANGE_NAME);
     }
 
     @Bean
     public Queue presentationQueue() {
-        return new Queue(PRESENTATION_QUEUE);
+        return new Queue(PRESENTATION_QUEUE, true);
     }
 
     @Bean
     public Binding presentationBinding(Queue presentationQueue, TopicExchange sensorExchange) {
         return BindingBuilder.bind(presentationQueue)
                 .to(sensorExchange)
-                .with(ROUTING_KEY);
+                .with(SENSOR_ROUTING_KEY);
+    }
+
+    @Bean
+    public TopicExchange notificationExchange() {
+        return new TopicExchange(NOTIFICATION_EXCHANGE_NAME);
+    }
+
+    @Bean
+    public Queue presentationRuleQueue() {
+        return new Queue(PRESENTATION_RULE_QUEUE, true);
+    }
+
+    @Bean
+    public Binding presentationRuleBinding(Queue presentationRuleQueue, TopicExchange notificationExchange) {
+        return BindingBuilder.bind(presentationRuleQueue)
+                .to(notificationExchange)
+                .with(RULE_TRIGGERED_ROUTING_KEY);
     }
 }

@@ -26,11 +26,24 @@ public class SensorSseService {
         return emitter;
     }
 
-    public void broadcast(NormalizedEvent event) {
+    public void broadcastSensorEvent(NormalizedEvent event) {
         for (SseEmitter emitter : emitters) {
             try {
                 emitter.send(SseEmitter.event()
                         .name("sensor-event")
+                        .data(event));
+            } catch (IOException e) {
+                emitter.complete();
+                emitters.remove(emitter);
+            }
+        }
+    }
+
+    public void broadcastRuleTriggered(RuleTriggeredEvent event) {
+        for (SseEmitter emitter : emitters) {
+            try {
+                emitter.send(SseEmitter.event()
+                        .name("rule-triggered")
                         .data(event));
             } catch (IOException e) {
                 emitter.complete();

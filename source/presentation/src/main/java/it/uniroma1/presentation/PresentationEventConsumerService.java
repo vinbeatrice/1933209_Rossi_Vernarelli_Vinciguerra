@@ -22,6 +22,6 @@ public class PresentationEventConsumerService {
         System.out.println("Presentation received event from: " + event.getSourceId());
 
         sensorCacheService.update(event);
-        sensorSseService.broadcast(event);
+        sensorSseService.broadcastSensorEvent(event);
     }
 }

@@ -1,6 +1,7 @@
 package it.uniroma1.processing;
 
 import java.util.List;
+import java.time.Instant;
 
 import org.springframework.stereotype.Service;
 
@@ -12,11 +13,14 @@ public class RuleEvaluationService {
 
     private final AutomationRuleRepository automationRuleRepository;
     private final ActuatorClientService actuatorClientService;
+    private final RuleTriggeredEventPublisher ruleTriggeredEventPublisher;
 
     public RuleEvaluationService(AutomationRuleRepository automationRuleRepository,
-                                 ActuatorClientService actuatorClientService) {
+                                 ActuatorClientService actuatorClientService,
+                                 RuleTriggeredEventPublisher ruleTriggeredEventPublisher) {
         this.automationRuleRepository = automationRuleRepository;
         this.actuatorClientService = actuatorClientService;
+        this.ruleTriggeredEventPublisher = ruleTriggeredEventPublisher;
     }
 
     public void evaluate(NormalizedEvent event) {
@@ -28,6 +32,20 @@ public class RuleEvaluationService {
             if (matches(rule, event)) {
                 actuatorClientService.apply(rule.getActuatorName(), rule.getTargetState());
                 System.out.println("Rule triggered: " + rule.getId());
+
+                RuleTriggeredEvent triggeredEvent = new RuleTriggeredEvent(
+                    rule.getId(),
+                    rule.getSensorName(),
+                    rule.getMetric(),
+                    rule.getOperator(),
+                    rule.getThresholdValue(),
+                    rule.getUnit(),
+                    rule.getActuatorName(),
+                    rule.getTargetState(),
+                    Instant.now().toString()
+                );
+
+                ruleTriggeredEventPublisher.publish(triggeredEvent);
             }
         }
     }
