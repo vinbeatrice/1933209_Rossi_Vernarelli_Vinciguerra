@@ -1,5 +1,5 @@
 # SYSTEM DESCRIPTION:
-A distributed automation platform capable of ingesting heterogeneous sensor data, normalizing it into a unified internal representation, evaluating simple automation rules dinamically to allow both manual and automatic activation of actuators, and providing a real-time dashboard for habitat monitoring and plots showing recent history of data.
+A distributed automation platform capable of ingesting heterogeneous sensor data, normalizing it into a unified internal representation, evaluating simple automation rules dynamically to allow both manual and automatic activation of actuators, and providing a real-time dashboard for habitat monitoring and plots showing recent history of data.
 
 # USER STORIES:
 1) As a Mars operator, I want to visualize current data coming from REST sensors so that I can monitor the situation.
