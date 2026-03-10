@@ -18,3 +18,32 @@ A distributed automation platform capable of ingesting heterogeneous sensor data
 14) As a Mars operator, I want to be able to export useful data into pdf files so that I can process them offline.
 15) As a Mars operator, I want to be able to activate/disable an automation rule so that I can have more flexibility and handle critic situations.
 16) As a Mars operator, I want to be able to see the list of automation rules, so that I can manage them.
+
+# NORMALIZED EVENT STRUCTURE:
+NormalizedEvent
+- sourceId : String
+- sourceType: SourceType
+- schema : String
+- timestamp : String
+- status : String
+- measurements : List\<Measurmentes\>
+
+SourceType: enum {REST, STREAM}
+
+Measurement: 
+- metric : String
+- value : Double
+- unit : String
+
+# RULE MODEL:
+AutomationRule:
+- id : Long
+- sensorName : String
+- metric : String
+- operator : String
+- thresholdValue : Double 
+- unit: String
+- actuatorName : String
+- targetState : String
+- enabled : boolean 
+- description : String 
